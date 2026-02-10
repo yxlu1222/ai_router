@@ -200,36 +200,15 @@ class Service:
             print(f"Routing Error on {best_candidate['provider']}: {e}")
             raise e
 
-    async def run_refresh(self, batch_size=64):
+    async def run_refresh(self):
         """
         运行一轮测试并存入数据库
-        优先测试 1. 尚未测试过的模型 2. 随机抽取已测试模型
-        限制单次测试数量以保证响应速度
+        测试所有已配置的模型
         """
-        # 获取当前统计数据以判断哪些是“新”模型
-        stats = get_aggregated_stats()
-        all_models = self.models_config
-        
-        untested = [m for m in all_models if m["id"] not in stats or stats[m["id"]].get("success_count", 0) == 0]
-        tested = [m for m in all_models if m["id"] in stats and stats[m["id"]].get("success_count", 0) > 0]
-        
-        selected = []
-        # 优先填满 untested
-        if len(untested) >= batch_size:
-            selected = random.sample(untested, batch_size)
-        else:
-            selected = untested.copy()
-            remainder = batch_size - len(selected)
-            if tested:
-                # 剩下的名额从 tested 里随机抽
-                sample_size = min(len(tested), remainder)
-                selected.extend(random.sample(tested, sample_size))
-        
-        # 兜底
-        if not selected and all_models:
-             selected = all_models[:batch_size]
+        # 使用全部模型
+        selected = self.models_config
 
-        print(f"🎯 本次刷新计划测试 {len(selected)} 个模型 (未测: {len(untested)}, 已测: {len(tested)})")
+        print(f"🎯 本次刷新计划测试 {len(selected)} 个模型")
 
         # 构建测试配置
         test_configs = []
@@ -245,7 +224,7 @@ class Service:
                 "prompt": "写一个关于人工智能未来的50字短评。" 
             })
 
-        # 运行测试
+        # 运行测试 (使用较高并发数以加快速度)
         print("开始新一轮测试...")
         results = await self.engine.run_batch(test_configs, concurrency=50)
         
