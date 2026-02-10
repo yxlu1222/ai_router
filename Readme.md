@@ -26,15 +26,18 @@ pip install -r requirements.txt
 python src/demo.py
 ```
 
-4. 运行 Web 服务（若项目提供 `main.py` 启动器）:
+4. 导入各个厂商的模型:
+
+```bash
+python src/sync_models.py
+```
+
+5. 运行 Web 服务（若项目提供 `main.py` 启动器）:
 
 ```bash
 python src/main.py
+uvicorn src.main:app --reload
 ```
-
-将项目推送到 GitHub（示例指令见下方）
-
----
 
 如果需要，我可以帮您生成 `.github/workflows/ci.yml` 自动化部署或 PR 检查。 
 uvicorn src.main:app --reload

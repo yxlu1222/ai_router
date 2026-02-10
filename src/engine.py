@@ -128,7 +128,7 @@ class BenchmarkEngine:
 
         return result
 
-    async def run_batch(self, configs: List[Dict], concurrency: int = 5):
+    async def run_batch(self, configs: List[Dict], concurrency: int = 32):
         """
         并行运行多个测试，限制并发数
         """
