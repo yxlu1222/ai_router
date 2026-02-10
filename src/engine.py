@@ -18,7 +18,8 @@ class BenchmarkEngine:
                           model: str, 
                           prompt: str, 
                           api_key: Optional[str] = None, 
-                          api_base: Optional[str] = None):
+                          api_base: Optional[str] = None,
+                          timeout: int = 60):
         """
         运行单个模型的基准测试
         """
@@ -41,6 +42,7 @@ class BenchmarkEngine:
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}],
                 "stream": True, # 强制开启流式以计算 TTFT
+                "timeout": timeout  # 设置超时时间，防止卡死
             }
             
             # 如果提供了特定的 key 或 base url (覆盖环境变量)

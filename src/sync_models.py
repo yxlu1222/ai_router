@@ -23,6 +23,21 @@ PROVIDERS_CONFIG = [
     {"name": "并行智算 (Paratera)", "key": "PARATERA_API_KEY", "base": "PARATERA_API_BASE", "prefix": "paratera"},
     {"name": "基石智算 (CoresHub)", "key": "CORESHUB_API_KEY", "base": "CORESHUB_API_BASE", "prefix": "coreshub"},
     {"name": "UCloud", "key": "UCLOUD_API_KEY", "base": "UCLOUD_API_BASE", "prefix": "ucloud"},
+    
+    # 新增服务商
+    {"name": "火山方舟 (Volcengine)", "key": "VOLCENGINE_API_KEY", "base": "VOLCENGINE_API_BASE", "prefix": "volcengine"},
+    {"name": "快手万擎 (Kwai)", "key": "KWAI_API_KEY", "base": "KWAI_API_BASE", "prefix": "kwai"},
+    {"name": "智谱AI (Zhipu)", "key": "ZHIPU_API_KEY", "base": "ZHIPU_API_BASE", "prefix": "zhipu"},
+    {"name": "腾讯云 (Tencent)", "key": "TENCENT_API_KEY", "base": "TENCENT_API_BASE", "prefix": "tencent"},
+    {"name": "天翼云 (CTyun)", "key": "CTYUN_API_KEY", "base": "CTYUN_API_BASE", "prefix": "ctyun"},
+    {"name": "MoonShot AI", "key": "MOONSHOT_API_KEY", "base": "MOONSHOT_API_BASE", "prefix": "moonshot"},
+    {"name": "StepFun (阶跃星辰)", "key": "STEPFUN_API_KEY", "base": "STEPFUN_API_BASE", "prefix": "stepfun"},
+    {"name": "DeepSeek (Official)", "key": "DEEPSEEK_API_KEY", "base": "DEEPSEEK_API_BASE", "prefix": "deepseek-official"},
+    {"name": "SCNet", "key": "SCNET_API_KEY", "base": "SCNET_API_BASE", "prefix": "scnet"},
+    
+    # 用户确认可用
+    {"name": "零克云 (LinkAI)", "key": "LINKAI_API_KEY", "base": "LINKAI_API_BASE", "prefix": "linkai"},
+    {"name": "百灵大模型 (Bailing)", "key": "BAILING_API_KEY", "base": "BAILING_API_BASE", "prefix": "bailing"},
 ]
 
 def load_json():
@@ -41,22 +56,83 @@ def save_json(models):
 def identify_model_alias(model_id):
     mid = model_id.lower()
     
-    # DeepSeek 系列
+    # 常用大模型别名映射
+    
+    # DeepSeek
     if "deepseek" in mid:
         if "v3" in mid:
-            # 区分 V3 和 V3.2
-            if "3.2" in mid:
-                return "deepseek-v3.2"
-            return "deepseek-v3"
+            return "deepseek-v3.2" if "3.2" in mid else "deepseek-v3"
         if "r1" in mid:
             return "deepseek-r1"
     
-    # Qwen 系列
+    # Qwen (通义千问)
     if "qwen" in mid:
+        # 特殊变体
         if "plus" in mid: return "qwen-plus"
-        if "max" in mid: return "qwen-max"
+        if "max" in mid: return "qwen-max" 
         if "turbo" in mid: return "qwen-turbo"
-        if "2.5" in mid and "72b" in mid: return "qwen-2.5-72b"
+        if "long" in mid: return "qwen-long"
+        
+        # 版本号匹配
+        if "2.5" in mid:
+            if "72b" in mid: return "qwen-2.5-72b"
+            if "32b" in mid: return "qwen-2.5-32b"
+            if "14b" in mid: return "qwen-2.5-14b"
+            if "7b" in mid: return "qwen-2.5-7b"
+            return "qwen-2.5"
+            
+        if "vl" in mid: return "qwen-vl"
+        return "qwen-generic"
+
+    # Llama (Meta)
+    if "llama" in mid:
+        if "3.3" in mid: return "llama-3.3"
+        if "3.2" in mid: return "llama-3.2"
+        if "3.1" in mid:
+            if "405b" in mid: return "llama-3.1-405b"
+            if "70b" in mid: return "llama-3.1-70b"
+            if "8b" in mid: return "llama-3.1-8b"
+            return "llama-3.1"
+        if "3" in mid: return "llama-3"
+        return "llama-generic"
+
+    # GLM (智谱)
+    if "glm" in mid:
+        if "4" in mid:
+            if "plus" in mid: return "glm-4-plus"
+            if "air" in mid: return "glm-4-air"
+            if "flash" in mid: return "glm-4-flash"
+            if "long" in mid: return "glm-4-long"
+            return "glm-4"
+        return "glm-generic"
+
+    # Yi (零一万物)
+    if "yi-" in mid or "yi/" in mid:
+        if "large" in mid: return "yi-large"
+        if "medium" in mid: return "yi-medium"
+        if "lightning" in mid: return "yi-lightning"
+        return "yi-generic"
+
+    # Doubao (豆包 - 火山)
+    if "doubao" in mid:
+        if "pro" in mid: return "doubao-pro"
+        if "lite" in mid: return "doubao-lite"
+        return "doubao-generic"
+
+    # Moonshot (Kimi)
+    if "moonshot" in mid:
+        if "128k" in mid: return "moonshot-128k"
+        return "moonshot-v1"
+
+    # Step (阶跃)
+    if "step" in mid:
+        if "2" in mid: return "step-2"
+        if "1" in mid: return "step-1"
+            
+    # 其他通用模型，如果不在此列，也希望能加入，归类为 "other"
+    # 只要不是 embedding 模型通常都可以用于对话
+    if "embedding" not in mid and "rerank" not in mid:
+        return "other-llm"
         
     return None
 

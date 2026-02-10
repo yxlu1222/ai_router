@@ -89,6 +89,94 @@ async def main():
             "api_key": os.getenv("UCLOUD_API_KEY"),
             "api_base": os.getenv("UCLOUD_API_BASE"),
             "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # 火山方舟 (需要替换为具体的 Endpoint ID)
+        {
+            "provider": "Volcengine",
+            "model": "openai/doubao-seed-1-8-251228", # 🔴 请在此处填入您在火山引擎控制台创建的接入点ID
+            "api_key": os.getenv("VOLCENGINE_API_KEY"),
+            "api_base": os.getenv("VOLCENGINE_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # 快手万擎
+        {
+            "provider": "Kwai",
+            "model": "openai/deepseek-v3",
+            "api_key": os.getenv("KWAI_API_KEY"),
+            "api_base": os.getenv("KWAI_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # 智谱AI (GLM-4)
+        {
+            "provider": "Zhipu",
+            "model": "openai/glm-4", 
+            "api_key": os.getenv("ZHIPU_API_KEY"),
+            "api_base": os.getenv("ZHIPU_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # 腾讯云
+        {
+            "provider": "Tencent",
+            "model": "openai/deepseek-v3",
+            "api_key": os.getenv("TENCENT_API_KEY"),
+            "api_base": os.getenv("TENCENT_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # 零克云 
+        {
+            "provider": "LinkAI",
+            "model": "openai/DeepSeek-V3.2",
+            "api_key": os.getenv("LINKAI_API_KEY"),
+            "api_base": os.getenv("LINKAI_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # 天翼云
+        {
+            "provider": "CTyun",
+            "model": "openai/DeepSeek-R1-昇腾版", # 尝试修正为小写 id
+            "api_key": os.getenv("CTYUN_API_KEY"),
+            "api_base": os.getenv("CTYUN_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # MoonShot
+        {
+            "provider": "MoonShot",
+            "model": "openai/moonshot-v1-8k",
+            "api_key": os.getenv("MOONSHOT_API_KEY"),
+            "api_base": os.getenv("MOONSHOT_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # 百灵大模型 (暂停测试：需开通服务)
+        {
+            "provider": "Bailing",
+            "model": "openai/Ling-1T",
+            "api_key": os.getenv("BAILING_API_KEY"),
+            "api_base": os.getenv("BAILING_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # 阶跃星辰
+        {
+            "provider": "StepFun",
+            "model": "openai/step-1-8k",
+            "api_key": os.getenv("STEPFUN_API_KEY"),
+            "api_base": os.getenv("STEPFUN_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # DeepSeek
+        {
+            "provider": "DeepSeek",
+            "model": "openai/deepseek-chat",
+            "api_key": os.getenv("DEEPSEEK_API_KEY"),
+            "api_base": os.getenv("DEEPSEEK_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
+        },
+        # SCNet
+        {
+            "provider": "SCNet",
+            "model": "openai/Qwen3-235B-A22B", # 尝试修正为小写 id
+            "api_key": os.getenv("SCNET_API_KEY"),
+            "api_base": os.getenv("SCNET_API_BASE"),
+            "prompt": "你好，请用一句话介绍你自己。"
         }
     ]
 

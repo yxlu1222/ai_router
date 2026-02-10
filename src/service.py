@@ -79,7 +79,43 @@ class Service:
         elif "UCloud" in provider_name or "UCLOUD" in provider_name:
             api_key = os.getenv("UCLOUD_API_KEY")
             api_base = os.getenv("UCLOUD_API_BASE")
-            
+        elif "讯飞" in provider_name or "Xunfei" in provider_name:
+            api_key = os.getenv("XUNFEI_API_KEY")
+            api_base = os.getenv("XUNFEI_API_BASE")
+        elif "火山" in provider_name or "Volcengine" in provider_name:
+            api_key = os.getenv("VOLCENGINE_API_KEY")
+            api_base = os.getenv("VOLCENGINE_API_BASE")
+        elif "快手" in provider_name or "Kwai" in provider_name:
+            api_key = os.getenv("KWAI_API_KEY")
+            api_base = os.getenv("KWAI_API_BASE")
+        elif "智谱" in provider_name or "Zhipu" in provider_name:
+            api_key = os.getenv("ZHIPU_API_KEY")
+            api_base = os.getenv("ZHIPU_API_BASE")
+        elif "腾讯" in provider_name or "Tencent" in provider_name:
+            api_key = os.getenv("TENCENT_API_KEY")
+            api_base = os.getenv("TENCENT_API_BASE")
+        elif "零克" in provider_name or "LinkAI" in provider_name:
+            api_key = os.getenv("LINKAI_API_KEY")
+            api_base = os.getenv("LINKAI_API_BASE")
+        elif "天翼" in provider_name or "CTyun" in provider_name:
+            api_key = os.getenv("CTYUN_API_KEY")
+            api_base = os.getenv("CTYUN_API_BASE")
+        elif "MoonShot" in provider_name:
+            api_key = os.getenv("MOONSHOT_API_KEY")
+            api_base = os.getenv("MOONSHOT_API_BASE")
+        elif "百灵" in provider_name or "Bailing" in provider_name:
+            api_key = os.getenv("BAILING_API_KEY")
+            api_base = os.getenv("BAILING_API_BASE")
+        elif "阶跃" in provider_name or "StepFun" in provider_name:
+            api_key = os.getenv("STEPFUN_API_KEY")
+            api_base = os.getenv("STEPFUN_API_BASE")
+        elif "DeepSeek" in provider_name:
+            api_key = os.getenv("DEEPSEEK_API_KEY")
+            api_base = os.getenv("DEEPSEEK_API_BASE")
+        elif "SCNet" in provider_name:
+            api_key = os.getenv("SCNET_API_KEY")
+            api_base = os.getenv("SCNET_API_BASE")
+
         return api_key, api_base
 
     async def route_chat_completion(self, request_dict: Dict):
