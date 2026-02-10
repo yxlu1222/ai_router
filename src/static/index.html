@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 模型性能排行榜</title>
+    <script src="https://cdn.tailwindcss.com"></script> <!-- 使用 TailwindCSS 快速样式 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> <!-- 使用 Vue3 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<div id="app" class="max-w-7xl mx-auto p-6">
+    
+    <!-- 顶部标题 -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">🚀 AI 模型实时性能榜</h1>
+            <p class="text-gray-500 mt-2">实时测速：吞吐量 · 延迟 · 价格 · 性价比</p>
+        </div>
+        <button @click="refreshData()" :disabled="loading" 
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition shadow-sm">
+            <span v-if="loading"><i class="fas fa-spinner fa-spin mr-2"></i> 测速中...</span>
+            <span v-else><i class="fas fa-play mr-2"></i> 立即测速</span>
+        </button>
+    </div>
+
+    <!-- 列表卡片 -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-gray-500 text-sm uppercase tracking-wider border-b border-gray-200">
+                    <th class="p-4 font-medium">服务商 / 模型</th>
+                    <th class="p-4 font-medium">上下文 & 输出</th>
+                    <th class="p-4 font-medium">价格 (CNY/1M)</th>
+                    <th class="p-4 font-medium">吞吐量 (Tokens/s)</th>
+                    <th class="p-4 font-medium">首字延迟 (TTFT)</th>
+                    <th class="p-4 font-medium">测试样本</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <tr v-for="item in models" :key="item.id" class="hover:bg-blue-50 transition group">
+                    <!-- 服务商信息 -->
+                    <td class="p-4 align-top">
+                        <div class="font-bold text-gray-900 text-lg">{{ item.provider }}</div>
+                        <div class="text-sm text-gray-500 bg-gray-100 inline-block px-2 py-0.5 rounded mt-1">{{ item.display_name }}</div>
+                    </td>
+
+                    <!-- 上下文 -->
+                    <td class="p-4 align-middle">
+                        <div class="text-sm text-gray-600">
+                            <span class="block"><i class="fas fa-memory w-4 text-gray-400"></i> {{ item.context_window }} 上下文</span>
+                            <span class="block mt-1"><i class="fas fa-file-export w-4 text-gray-400"></i> {{ item.max_output }} 输出</span>
+                        </div>
+                    </td>
+
+                    <!-- 价格 -->
+                    <td class="p-4 align-middle">
+                        <div class="text-sm">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-gray-400 text-xs w-8">输入</span>
+                                <span class="font-mono font-medium">¥{{ item.input_price_cny_1m.toFixed(2) }}</span>
+                            </div>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <span class="text-gray-400 text-xs w-8">输出</span>
+                                <span class="font-mono font-medium text-orange-600">¥{{ item.output_price_cny_1m.toFixed(2) }}</span>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- 吞吐量 (核心指标) -->
+                    <td class="p-4 align-middle">
+                        <div class="flex items-end space-x-2">
+                            <span class="text-2xl font-bold text-green-600">{{ item.avg_throughput }}</span>
+                            <span class="text-sm text-gray-400 mb-1">t/s</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2 overflow-hidden">
+                            <div class="bg-green-500 h-1.5 rounded-full" :style="{ width: Math.min(item.avg_throughput, 100) + '%' }"></div>
+                        </div>
+                    </td>
+
+                    <!-- 延迟 -->
+                    <td class="p-4 align-middle">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg font-medium" :class="getLatencyColor(item.avg_ttft)">
+                                {{ (item.avg_ttft * 1000).toFixed(0) }}
+                            </span>
+                            <span class="text-xs text-gray-400">ms</span>
+                        </div>
+                    </td>
+
+                     <!-- 样本数 -->
+                     <td class="p-4 align-middle">
+                        <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full">
+                            {{ item.success_count }} 次测试
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    const { createApp, ref, onMounted } = Vue;
+
+    createApp({
+        setup() {
+            const models = ref([]);
+            const loading = ref(false);
+
+            const fetchData = async () => {
+                const res = await fetch('/api/stats');
+                models.value = await res.json();
+            };
+
+            const refreshData = async () => {
+                loading.value = true;
+                try {
+                    await fetch('/api/refresh', { method: 'POST' });
+                    await fetchData();
+                } finally {
+                    loading.value = false;
+                }
+            };
+
+            const getLatencyColor = (latency) => {
+                if(latency == 0) return 'text-gray-300';
+                if(latency < 0.5) return 'text-green-600';
+                if(latency < 1.0) return 'text-yellow-600';
+                return 'text-red-600';
+            };
+
+            onMounted(() => {
+                fetchData();
+            });
+
+            return {
+                models,
+                loading,
+                refreshData,
+                getLatencyColor
+            };
+        }
+    }).mount('#app');
+</script>
+
+</body>
+</html>

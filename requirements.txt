@@ -1,0 +1,14 @@
+litellm>=0.3.0
+httpx>=0.24.0
+python-dotenv>=1.0.0
+uvicorn>=0.22.0
+fastapi>=0.100.0
+pytest>=7.0.0
+requests>=2.30.0
+openai
+litellm
+fastapi
+uvicorn
+python-dotenv
+pydantic
+httpx
