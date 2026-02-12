@@ -39,6 +39,12 @@ python src/main.py
 uvicorn src.main:app --reload
 ```
 
+6.上传到github :
+```bash
+git add .
+git commit -m "new change"
+git push origin 
+```
 如果需要，我可以帮您生成 `.github/workflows/ci.yml` 自动化部署或 PR 检查。 
 uvicorn src.main:app --reload
 python src/demo.py
